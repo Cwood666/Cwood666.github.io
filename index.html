@@ -3,14 +3,24 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>寰宇教</title>
+<title>寰宇教 · 人世间 · 笑看间 · 唯我寰宇支配间</title>
 <style>
   :root {
     --bg: #04050c;
+    --g-panel: #1e2532;
+    --g-panel2: #262f40;
+    --g-border: #3a465c;
+    --g-text: #e6e9f0;
+    --g-muted: #8b96a8;
+    --g-gold: #f5c542;
+    --g-hp: #e05252;
+    --g-exp: #4da3ff;
+    --g-accent: #6c8cff;
+    --g-good: #4ec98a;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; }
-  html { scroll-snap-type: y mandatory; }
+  html { scroll-snap-type: y proximity; }
   body {
     background: var(--bg);
     color: #eae7f5;
@@ -43,14 +53,14 @@
   .scroll-hint {
     position: fixed;
     left: 50%;
-    bottom: 28px;
+    bottom: 26px;
     transform: translateX(-50%);
-    z-index: 3;
+    z-index: 5;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: rgba(234, 231, 245, .55);
+    color: rgba(234, 231, 245, .6);
     font-size: 12px;
     letter-spacing: 4px;
     transition: opacity .5s ease, visibility .5s ease;
@@ -58,8 +68,8 @@
   .scroll-hint .arrow {
     width: 12px;
     height: 12px;
-    border-right: 1px solid rgba(234, 231, 245, .6);
-    border-bottom: 1px solid rgba(234, 231, 245, .6);
+    border-right: 1px solid rgba(234, 231, 245, .65);
+    border-bottom: 1px solid rgba(234, 231, 245, .65);
     transform: rotate(45deg);
     animation: bob 1.6s ease-in-out infinite;
   }
@@ -70,58 +80,17 @@
   }
 
   /* 主滚动容器 */
-  main {
-    position: relative;
-    z-index: 1;
-  }
+  main { position: relative; z-index: 1; }
   .panel {
-    height: 100vh;
-    min-height: 100svh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    scroll-snap-align: center;
-    scroll-snap-stop: always;
     padding: 24px;
   }
 
-  /* 印章 */
-  .seal {
-    width: 52px;
-    height: 52px;
-    border: 2px solid rgba(224, 82, 82, .85);
-    border-radius: 6px;
-    color: #e05252;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    line-height: 1;
-    margin-bottom: 28px;
-    transform: rotate(-4deg);
-    opacity: 0;
-    transition: opacity 1s ease .2s;
-    letter-spacing: 0;
-  }
-  .panel.active .seal { opacity: 1; }
-
-  /* 主词 */
-  .word {
-    font-size: clamp(2.6rem, 11vw, 8.5rem);
-    font-weight: 900;
-    letter-spacing: .08em;
-    text-align: center;
-    white-space: nowrap;
-    color: var(--glow);
-    opacity: 0;
-    transform: scale(1.6);
-    filter: blur(40px);
-  }
-  .panel.active .word {
-    animation: flashIn 2.6s cubic-bezier(.19, 1, .22, 1) forwards;
-  }
-
+  /* 闪出动画（通用，光色由 --glow 决定） */
   @keyframes flashIn {
     0%   { opacity: 0; transform: scale(1.6); filter: blur(40px);
            text-shadow: 0 0 60px var(--glow), 0 0 120px var(--glow); }
@@ -139,25 +108,201 @@
            text-shadow: 0 0 26px var(--glow), 0 0 64px var(--glow), 0 0 110px var(--glow); }
   }
 
-  /* 分隔线 */
-  .divider {
+  /* ===== 第一屏：寰宇教 ===== */
+  .panel.hero { scroll-snap-align: center; scroll-snap-stop: always; }
+  .panel.hero .word {
+    font-size: clamp(3.4rem, 15vw, 11rem);
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-align: center;
+    white-space: nowrap;
+    color: var(--glow);
+    opacity: 0;
+    transform: scale(1.6);
+    filter: blur(40px);
+    --glow: #f5c542;
+  }
+  .panel.hero.active .word { animation: flashIn 2.6s cubic-bezier(.19, 1, .22, 1) forwards; }
+  .panel.hero .divider {
     width: 0;
     height: 1px;
-    margin-top: 34px;
-    background: linear-gradient(90deg, transparent, var(--glow), transparent);
+    margin-top: 30px;
+    background: linear-gradient(90deg, transparent, #f5c542, transparent);
     opacity: 0;
     transition: width 1.1s ease .5s, opacity .8s ease .5s;
   }
-  .panel.active .divider { width: min(340px, 60vw); opacity: .7; }
+  .panel.hero.active .divider { width: min(320px, 60vw); opacity: .7; }
 
-  /* 面板各自的光色 */
-  .panel.p1 { --glow: #4fd8ff; }
-  .panel.p2 { --glow: #f5c542; }
-  .panel.p3 { --glow: #b26bff; }
-  .panel.p3 .word { letter-spacing: .1em; }
-  .panel.p3 .divider {
-    background: linear-gradient(90deg, transparent, #f5c542, #b26bff, transparent);
+  /* ===== 第二屏：三段文字依次闪出 ===== */
+  .panel.verses {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    gap: clamp(20px, 5vh, 44px);
   }
+  .panel.verses .verse {
+    font-size: clamp(2.4rem, 8vw, 6.2rem);
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-align: center;
+    line-height: 1.2;
+    color: var(--glow);
+    opacity: 0;
+    transform: scale(1.6);
+    filter: blur(40px);
+  }
+  .panel.verses .verse.v1 { --glow: #4fd8ff; }
+  .panel.verses .verse.v2 { --glow: #f5c542; }
+  .panel.verses .verse.v3 { --glow: #b26bff; letter-spacing: .1em; }
+  .panel.verses.active .verse { animation: flashIn 2.2s cubic-bezier(.19, 1, .22, 1) forwards; }
+  .panel.verses.active .verse.v1 { animation-delay: 0s; }
+  .panel.verses.active .verse.v2 { animation-delay: .7s; }
+  .panel.verses.active .verse.v3 { animation-delay: 1.4s; }
+
+  /* ===== 第三屏：游戏 ===== */
+  .panel.game-panel {
+    scroll-snap-align: start;
+    justify-content: flex-start;
+    padding: 56px 16px 96px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .panel.game-panel.active { opacity: 1; transform: translateY(0); }
+
+  .game {
+    --panel: var(--g-panel);
+    --panel2: var(--g-panel2);
+    --border: var(--g-border);
+    --text: var(--g-text);
+    --muted: var(--g-muted);
+    --gold: var(--g-gold);
+    --hp: var(--g-hp);
+    --exp: var(--g-exp);
+    --accent: var(--g-accent);
+    --good: var(--g-good);
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: var(--text);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .game .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .game .card h2 {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .game .hero-row { display: flex; align-items: center; gap: 14px; }
+  .game .avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #6c8cff, #8a5cff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .game .hero-info { flex: 1; }
+  .game .hero-top { display: flex; align-items: baseline; justify-content: space-between; }
+  .game .hero-name { font-size: 18px; font-weight: 700; }
+  .game .hero-level { color: var(--gold); font-weight: 700; font-size: 14px; }
+  .game .bar { height: 10px; border-radius: 6px; background: #0e1219; overflow: hidden; margin-top: 6px; }
+  .game .bar > i { display: block; height: 100%; border-radius: 6px; transition: width .25s ease; }
+  .game .bar.hp > i { background: linear-gradient(90deg, #e05252, #f07979); }
+  .game .bar.exp > i { background: linear-gradient(90deg, #4da3ff, #7db8ff); }
+  .game .bar-label { font-size: 11px; color: var(--muted); margin-top: 3px; display: flex; justify-content: space-between; }
+  .game .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+  .game .stat { background: var(--panel2); border-radius: 10px; padding: 8px; text-align: center; }
+  .game .stat .v { font-size: 16px; font-weight: 700; }
+  .game .stat .k { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .game .stat.gold .v { color: var(--gold); }
+
+  .game .monster { text-align: center; }
+  .game .monster .face { font-size: 44px; line-height: 1; }
+  .game .monster .name { font-size: 17px; font-weight: 700; margin-top: 6px; }
+  .game .monster .bar { margin-top: 10px; }
+  .game .monster .bar-label { margin-top: 4px; }
+  .game .monster.empty { color: var(--muted); }
+
+  .game .log {
+    height: 150px;
+    overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .game .log .line { padding: 2px 0; border-bottom: 1px dashed #2c3547; }
+  .game .log .line.player { color: #9fc2ff; }
+  .game .log .line.monster { color: #ff9d9d; }
+  .game .log .line.system { color: var(--good); }
+  .game .log .line.reward { color: var(--gold); }
+
+  .game .actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .game .btn {
+    border: none;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .05s ease, opacity .2s;
+    color: #fff;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+  }
+  .game .btn:active { transform: scale(.97); }
+  .game .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .game .btn.primary { background: linear-gradient(135deg, #6c8cff, #8a5cff); border: none; }
+  .game .btn.danger { background: linear-gradient(135deg, #e05252, #f07979); border: none; }
+  .game .btn.gold { background: linear-gradient(135deg, #d9a520, #f5c542); color: #3a2a00; border: none; }
+  .game .btn.wide { grid-column: span 2; }
+  .game .btn.small { padding: 9px; font-size: 13px; }
+
+  .game .shop { margin-top: 12px; display: grid; gap: 8px; }
+  .game .shop-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel2);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .game .shop-item .desc { font-size: 13px; }
+  .game .shop-item .desc small { color: var(--muted); display: block; }
+  .game .shop-item .price { color: var(--gold); font-weight: 700; margin-right: 10px; font-size: 13px; }
+
+  .death-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.75);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+  }
+  .death-box {
+    background: var(--g-panel);
+    border: 1px solid var(--g-border);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    max-width: 320px;
+  }
+  .death-box h1 { font-size: 22px; margin-bottom: 8px; color: #e6e9f0; }
+  .death-box p { color: var(--g-muted); margin-bottom: 20px; font-size: 14px; }
+  .hidden { display: none; }
 </style>
 </head>
 <body>
@@ -165,20 +310,86 @@
 <div class="glow-bg"></div>
 
 <main>
-  <section class="panel p1">
-    <div class="seal">壹</div>
-    <div class="word">人世间</div>
+  <!-- 第一屏 -->
+  <section class="panel hero">
+    <div class="word">寰宇教</div>
     <div class="divider"></div>
   </section>
-  <section class="panel p2">
-    <div class="seal">贰</div>
-    <div class="word">笑看间</div>
-    <div class="divider"></div>
+
+  <!-- 第二屏 -->
+  <section class="panel verses">
+    <div class="verse v1">人世间</div>
+    <div class="verse v2">笑看间</div>
+    <div class="verse v3">唯我寰宇支配间</div>
   </section>
-  <section class="panel p3">
-    <div class="seal">叁</div>
-    <div class="word">唯我寰宇支配间</div>
-    <div class="divider"></div>
+
+  <!-- 第三屏 -->
+  <section class="panel game-panel">
+    <div class="game">
+      <div class="card">
+        <h2>勇者</h2>
+        <div class="hero-row">
+          <div class="avatar">⚔️</div>
+          <div class="hero-info">
+            <div class="hero-top">
+              <span class="hero-name">勇者</span>
+              <span class="hero-level" id="level">Lv.1</span>
+            </div>
+            <div class="bar hp"><i id="hpBar" style="width:100%"></i></div>
+            <div class="bar-label"><span id="hpText">100 / 100</span><span>HP</span></div>
+          </div>
+        </div>
+        <div class="bar exp"><i id="expBar" style="width:0%"></i></div>
+        <div class="bar-label"><span id="expText">0 / 50</span><span>经验</span></div>
+        <div class="stats">
+          <div class="stat"><div class="v" id="atk">12</div><div class="k">攻击</div></div>
+          <div class="stat"><div class="v" id="def">5</div><div class="k">防御</div></div>
+          <div class="stat gold"><div class="v" id="gold">0</div><div class="k">金币</div></div>
+          <div class="stat"><div class="v" id="potions">3</div><div class="k">药水</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>敌人</h2>
+        <div class="monster" id="monsterArea">
+          <div class="face" id="monsterFace">🐺</div>
+          <div class="name" id="monsterName">野狼</div>
+          <div class="bar hp"><i id="monsterHpBar" style="width:100%"></i></div>
+          <div class="bar-label"><span id="monsterHpText">40 / 40</span><span>HP</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>战斗日志</h2>
+        <div class="log" id="log"></div>
+      </div>
+
+      <div class="actions" id="actions">
+        <button class="btn primary" id="btnAttack">⚔️ 攻击</button>
+        <button class="btn" id="btnSkill">✨ 技能 (暴击)</button>
+        <button class="btn" id="btnPotion">🧪 用药水</button>
+        <button class="btn" id="btnFlee">🏃 逃跑</button>
+        <button class="btn gold wide" id="btnNext">🔍 继续探索 · 寻找下一个怪物</button>
+      </div>
+
+      <div class="card">
+        <h2>商店</h2>
+        <div class="shop">
+          <div class="shop-item">
+            <div class="desc">生命药水 <small>回复 50% 生命</small></div>
+            <button class="btn small gold" id="buyPotion">💰 20</button>
+          </div>
+          <div class="shop-item">
+            <div class="desc">强化攻击 <small>攻击力 +3</small></div>
+            <button class="btn small gold" id="buyAtk">💰 50</button>
+          </div>
+          <div class="shop-item">
+            <div class="desc">强化防御 <small>防御力 +2</small></div>
+            <button class="btn small gold" id="buyDef">💰 50</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -187,8 +398,19 @@
   <div class="arrow"></div>
 </div>
 
+<!-- 死亡弹窗 -->
+<div class="death-overlay hidden" id="deathOverlay">
+  <div class="death-box">
+    <div style="font-size:48px">💀</div>
+    <h1>你倒下了</h1>
+    <p id="deathInfo">在第 1 级被野狼击败</p>
+    <button class="btn primary" id="btnRevive" style="border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#6c8cff,#8a5cff);">🔄 复活重来</button>
+  </div>
+</div>
+
 <script>
 (function () {
+  // ===== 星空背景 =====
   const canvas = document.getElementById('stars');
   const ctx = canvas.getContext('2d');
   const mouse = { x: -9999, y: -9999 };
@@ -225,13 +447,11 @@
 
   function tick() {
     ctx.clearRect(0, 0, W, H);
-
     for (const s of stars) {
       s.x += s.vx;
       s.y += s.vy;
       if (s.x < -10) s.x = W + 10; else if (s.x > W + 10) s.x = -10;
       if (s.y < -10) s.y = H + 10; else if (s.y > H + 10) s.y = -10;
-
       s.tw += .02;
       const a = s.base * (0.6 + 0.4 * Math.sin(s.tw));
       ctx.beginPath();
@@ -239,8 +459,6 @@
       ctx.fillStyle = 'rgba(210, 225, 255, ' + a.toFixed(3) + ')';
       ctx.fill();
     }
-
-    // 鼠标附近粒子连接线
     if (mouse.x > 0 && mouse.y > 0) {
       for (const s of stars) {
         const dx = s.x - mouse.x;
@@ -258,31 +476,299 @@
         }
       }
     }
-
     requestAnimationFrame(tick);
   }
 
   window.addEventListener('resize', resize);
   window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
   window.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
-
   resize();
   tick();
 
-  // 滚动触发「闪出」
+  // ===== 滚动触发闪出 =====
   const panels = document.querySelectorAll('.panel');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) entry.target.classList.add('active');
     });
-  }, { threshold: 0.5 });
+  }, { threshold: 0.4 });
   panels.forEach(p => observer.observe(p));
 
-  // 滚动提示的隐藏
+  // ===== 滚动提示：进入游戏屏后隐藏 =====
   const hint = document.getElementById('hint');
-  window.addEventListener('scroll', () => {
-    hint.classList.toggle('hidden', window.scrollY > 60);
-  }, { passive: true });
+  const gamePanel = document.querySelector('.panel.game-panel');
+  const hintObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => hint.classList.toggle('hidden', e.isIntersecting));
+  }, { threshold: 0.1 });
+  hintObserver.observe(gamePanel);
+})();
+</script>
+
+<script>
+(function () {
+  // ===== 打怪升级游戏 =====
+  const MONSTER_TABLE = [
+    { name: '史莱姆', face: '🟢', hp: 30,  atk: 6,  exp: 15, gold: 8  },
+    { name: '野狼',   face: '🐺', hp: 40,  atk: 9,  exp: 22, gold: 12 },
+    { name: '哥布林', face: '👺', hp: 50,  atk: 12, exp: 30, gold: 16 },
+    { name: '骷髅兵', face: '💀', hp: 65,  atk: 15, exp: 40, gold: 22 },
+    { name: '兽人',   face: '👹', hp: 85,  atk: 19, exp: 55, gold: 30 },
+    { name: '石像鬼', face: '🗿', hp: 110, atk: 24, exp: 70, gold: 40 },
+    { name: '暗影刺客', face: '🥷', hp: 140, atk: 30, exp: 90, gold: 52 },
+    { name: '魔龙',   face: '🐉', hp: 180, atk: 38, exp: 120, gold: 70 },
+    { name: '魔王',   face: '😈', hp: 240, atk: 48, exp: 160, gold: 100 },
+  ];
+
+  const player = {
+    level: 1, exp: 0, expToNext: 50,
+    hp: 100, maxHp: 100, atk: 12, def: 5,
+    gold: 0, potions: 3, critRate: 0.15,
+  };
+
+  let monster = null;
+
+  const $ = id => document.getElementById(id);
+  const logEl = $('log');
+
+  function log(msg, cls) {
+    const div = document.createElement('div');
+    div.className = 'line ' + (cls || '');
+    div.textContent = msg;
+    logEl.appendChild(div);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function spawnMonster() {
+    const tier = Math.min(MONSTER_TABLE.length - 1, Math.floor((player.level - 1) / 2));
+    const pick = MONSTER_TABLE[tier];
+    const scale = 1 + (player.level - 1) * 0.35;
+    monster = {
+      name: pick.name,
+      face: pick.face,
+      hp: Math.round(pick.hp * scale),
+      maxHp: Math.round(pick.hp * scale),
+      atk: Math.round(pick.atk * scale),
+      exp: Math.round(pick.exp * scale),
+      gold: Math.round(pick.gold * scale),
+      def: Math.round(player.level * 1.5),
+    };
+    renderMonster();
+    log('遇到了 ' + monster.name + '！', 'system');
+    setBattleMode(true);
+  }
+
+  function renderMonster() {
+    $('monsterFace').textContent = monster.face;
+    $('monsterName').textContent = monster.name;
+    updateMonsterBar();
+  }
+
+  function updateMonsterBar() {
+    const pct = clamp((monster.hp / monster.maxHp) * 100, 0, 100);
+    $('monsterHpBar').style.width = pct + '%';
+    $('monsterHpText').textContent = Math.max(0, monster.hp) + ' / ' + monster.maxHp;
+  }
+
+  function renderPlayer() {
+    $('level').textContent = 'Lv.' + player.level;
+    const hpPct = clamp((player.hp / player.maxHp) * 100, 0, 100);
+    $('hpBar').style.width = hpPct + '%';
+    $('hpText').textContent = Math.max(0, Math.round(player.hp)) + ' / ' + player.maxHp;
+    const expPct = clamp((player.exp / player.expToNext) * 100, 0, 100);
+    $('expBar').style.width = expPct + '%';
+    $('expText').textContent = player.exp + ' / ' + player.expToNext;
+    $('atk').textContent = player.atk;
+    $('def').textContent = player.def;
+    $('gold').textContent = player.gold;
+    $('potions').textContent = player.potions;
+  }
+
+  function setBattleMode(inBattle) {
+    $('btnAttack').disabled = !inBattle;
+    $('btnSkill').disabled = !inBattle;
+    $('btnPotion').disabled = !inBattle;
+    $('btnFlee').disabled = !inBattle;
+    $('btnNext').disabled = inBattle;
+  }
+
+  function playerDamage(target, isSkill) {
+    let dmg = player.atk + rand(0, 4) - target.def;
+    let crit = false;
+    if (isSkill) {
+      crit = true;
+      dmg = Math.round(player.atk * 2.2) - target.def;
+    } else if (Math.random() < player.critRate) {
+      crit = true;
+      dmg = Math.round((player.atk + rand(0, 4)) * 1.8) - target.def;
+    }
+    dmg = Math.max(1, dmg);
+    target.hp -= dmg;
+    return { dmg, crit };
+  }
+
+  function monsterDamage() {
+    let dmg = monster.atk + rand(-2, 3) - player.def;
+    dmg = Math.max(1, dmg);
+    player.hp -= dmg;
+    return dmg;
+  }
+
+  function gainExp(amount) {
+    player.exp += amount;
+    log('获得 ' + amount + ' 经验！', 'reward');
+    while (player.exp >= player.expToNext) {
+      player.exp -= player.expToNext;
+      levelUp();
+    }
+    renderPlayer();
+  }
+
+  function levelUp() {
+    player.level++;
+    player.expToNext = Math.round(player.expToNext * 1.45);
+    const hpGain = 20 + player.level * 4;
+    const atkGain = 4;
+    const defGain = 2;
+    player.maxHp += hpGain;
+    player.atk += atkGain;
+    player.def += defGain;
+    player.hp = player.maxHp;
+    log('🎉 升级！现在是 Lv.' + player.level + '，生命上限 +' + hpGain + '，攻击 +' + atkGain + '，防御 +' + defGain, 'system');
+  }
+
+  function onVictory() {
+    const gold = monster.gold;
+    const exp = monster.exp;
+    player.gold += gold;
+    log('击败了 ' + monster.name + '！获得 ' + gold + ' 金币', 'reward');
+    gainExp(exp);
+    monster = null;
+    setBattleMode(false);
+    $('monsterFace').textContent = '❓';
+    $('monsterName').textContent = '—';
+    $('monsterHpBar').style.width = '0%';
+    $('monsterHpText').textContent = '—';
+    log('战斗结束，可以继续探索了', 'system');
+    renderPlayer();
+  }
+
+  function onDeath() {
+    $('deathInfo').textContent = '在第 ' + player.level + ' 级被 ' + monster.name + ' 击败';
+    $('deathOverlay').classList.remove('hidden');
+  }
+
+  function resetGame() {
+    Object.assign(player, {
+      level: 1, exp: 0, expToNext: 50,
+      hp: 100, maxHp: 100, atk: 12, def: 5,
+      gold: 0, potions: 3, critRate: 0.15,
+    });
+    monster = null;
+    logEl.innerHTML = '';
+    $('deathOverlay').classList.add('hidden');
+    log('新的冒险开始了！', 'system');
+    renderPlayer();
+    setBattleMode(false);
+    $('monsterFace').textContent = '❓';
+    $('monsterName').textContent = '—';
+    $('monsterHpBar').style.width = '0%';
+    $('monsterHpText').textContent = '—';
+  }
+
+  function attack() {
+    if (!monster) return;
+    const r = playerDamage(monster, false);
+    updateMonsterBar();
+    log('你对 ' + monster.name + ' 造成 ' + r.dmg + ' 点伤害' + (r.crit ? '（暴击！）' : ''), 'player');
+    if (monster.hp <= 0) { onVictory(); return; }
+    enemyTurn();
+  }
+
+  function skill() {
+    if (!monster) return;
+    const r = playerDamage(monster, true);
+    updateMonsterBar();
+    log('✨ 技能释放！对 ' + monster.name + ' 造成 ' + r.dmg + ' 点暴击伤害', 'player');
+    if (monster.hp <= 0) { onVictory(); return; }
+    enemyTurn();
+  }
+
+  function enemyTurn() {
+    const dmg = monsterDamage();
+    renderPlayer();
+    log(monster.name + ' 对你造成 ' + dmg + ' 点伤害', 'monster');
+    if (player.hp <= 0) { onDeath(); }
+  }
+
+  function usePotion() {
+    if (!monster) return;
+    if (player.potions <= 0) { log('没有药水了！', 'system'); return; }
+    player.potions--;
+    const heal = Math.round(player.maxHp * 0.5);
+    player.hp = Math.min(player.maxHp, player.hp + heal);
+    log('使用药水，回复 ' + heal + ' 点生命', 'system');
+    renderPlayer();
+    enemyTurn();
+  }
+
+  function flee() {
+    if (!monster) return;
+    if (Math.random() < 0.7) {
+      log('成功逃跑了！', 'system');
+      monster = null;
+      setBattleMode(false);
+      $('monsterFace').textContent = '❓';
+      $('monsterName').textContent = '—';
+      $('monsterHpBar').style.width = '0%';
+      $('monsterHpText').textContent = '—';
+    } else {
+      log('逃跑失败！', 'monster');
+      enemyTurn();
+    }
+  }
+
+  function buyPotion() {
+    if (player.gold < 20) { log('金币不足！', 'system'); return; }
+    player.gold -= 20;
+    player.potions++;
+    log('购买了 1 瓶生命药水', 'system');
+    renderPlayer();
+  }
+  function buyAtk() {
+    if (player.gold < 50) { log('金币不足！', 'system'); return; }
+    player.gold -= 50;
+    player.atk += 3;
+    log('攻击力 +3！', 'system');
+    renderPlayer();
+  }
+  function buyDef() {
+    if (player.gold < 50) { log('金币不足！', 'system'); return; }
+    player.gold -= 50;
+    player.def += 2;
+    log('防御力 +2！', 'system');
+    renderPlayer();
+  }
+
+  $('btnAttack').addEventListener('click', attack);
+  $('btnSkill').addEventListener('click', skill);
+  $('btnPotion').addEventListener('click', usePotion);
+  $('btnFlee').addEventListener('click', flee);
+  $('btnNext').addEventListener('click', spawnMonster);
+  $('buyPotion').addEventListener('click', buyPotion);
+  $('buyAtk').addEventListener('click', buyAtk);
+  $('buyDef').addEventListener('click', buyDef);
+  $('btnRevive').addEventListener('click', resetGame);
+
+  renderPlayer();
+  setBattleMode(false);
+  $('monsterFace').textContent = '❓';
+  $('monsterName').textContent = '—';
+  $('monsterHpBar').style.width = '0%';
+  $('monsterHpText').textContent = '—';
+  log('欢迎来到打怪升级！点击「继续探索」开始战斗', 'system');
 })();
 </script>
 </body>
